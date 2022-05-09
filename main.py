@@ -14,7 +14,7 @@ screen = pygame.display.set_mode(WINDOW_SIZE, 0, 32)
 display = pygame.Surface((300, 200))
 
 player_image = pygame.image.load('img/triton.png')
-bg_image = pygame.image.load('img/bg.png').convert()
+bg_image = pygame.image.load('img/map.png').convert()
 
 move_speed = 1.5
 moving_left = False
@@ -71,23 +71,23 @@ while True:
             sys.exit()
 
         if event.type == KEYDOWN:
-            if event.key == K_LEFT:
+            if event.key == K_a:
                 moving_left = True
-            if event.key == K_RIGHT:
+            if event.key == K_d:
                 moving_right = True
-            if event.key == K_UP:
+            if event.key == K_w:
                 moving_up = True
-            if event.key == K_DOWN:
+            if event.key == K_s:
                 moving_down = True
 
         if event.type == KEYUP:
-            if event.key == K_LEFT:
+            if event.key == K_a:
                 moving_left = False
-            if event.key == K_RIGHT:
+            if event.key == K_d:
                 moving_right = False
-            if event.key == K_UP:
+            if event.key == K_w:
                 moving_up = False
-            if event.key == K_DOWN:
+            if event.key == K_s:
                 moving_down = False
 
     surf = pygame.transform.scale(display, WINDOW_SIZE)
