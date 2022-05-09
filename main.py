@@ -1,3 +1,4 @@
+from curses import KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_UP
 import pygame
 import sys
 from pygame.locals import *
@@ -71,23 +72,23 @@ while True:
             sys.exit()
 
         if event.type == KEYDOWN:
-            if event.key == K_a:
+            if event.key == K_LEFT or event.key == K_a:
                 moving_left = True
-            if event.key == K_d:
+            if event.key == K_RIGHT or event.key == K_d:
                 moving_right = True
-            if event.key == K_w:
+            if event.key == K_UP or event.key == K_w:
                 moving_up = True
-            if event.key == K_s:
+            if event.key == K_DOWN or event.key == K_s:
                 moving_down = True
 
         if event.type == KEYUP:
-            if event.key == K_a:
+            if event.key == K_LEFT or event.key == K_a:
                 moving_left = False
-            if event.key == K_d:
+            if event.key == K_RIGHT or event.key == K_d:
                 moving_right = False
-            if event.key == K_w:
+            if event.key == K_UP or event.key == K_w:
                 moving_up = False
-            if event.key == K_s:
+            if event.key == K_DOWN or event.key == K_s:
                 moving_down = False
 
     surf = pygame.transform.scale(display, WINDOW_SIZE)
