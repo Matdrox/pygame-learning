@@ -9,60 +9,62 @@ pygame.init()
 
 pygame.display.set_caption('Mytholos')
 
-WINDOW_SIZE = (800, 600)
+WINDOW_SIZE = (1200, 800)
 
 screen = pygame.display.set_mode(WINDOW_SIZE, 0, 32)
+display = pygame.Surface((300, 200))
 
-player_image = pygame.transform.scale(
-    pygame.image.load('img/triton.png'), (128, 128))
+player_image = pygame.image.load('img/triton.png')
+bg_image = pygame.image.load('img/bg.png')
 
-move_speed = 5
+move_speed = 1.5
 moving_left = False
 moving_right = False
 moving_up = False
 moving_down = False
 
 player_location = [50, 50]
+scroll = [0, 0]
 
-player_rect = pygame.Rect(player_location[0], player_location[1], player_image.get_width(), player_image.get_height())
+player_rect = pygame.Rect(50, 50, player_image.get_width(), player_image.get_height())
 test_rect = pygame.Rect(100, 100, 100, 50)
 
-
 while True:
-    screen.fill(0)
+    display.blit(bg_image, (-scroll[0], -scroll[1]))
+    scroll[0] += (player_rect.x - scroll[0] - (display.get_width()/2-player_rect.width/2))/20
+    scroll[1] += (player_rect.y - scroll[1] - (display.get_height()/2-player_rect.height/2))/20
 
-    mouse_x, mouse_y = pygame.mouse.get_pos()
+    player_movement = [0, 0]
 
-    screen.blit(player_image, player_location)
+
     if moving_left:
         if moving_up or moving_down:
-            player_location[0] -= move_speed*0.7071
+            player_movement[0] -= move_speed*0.7071
         else:
-            player_location[0] -= move_speed
+            player_movement[0] -= move_speed
     if moving_right:
         if moving_up or moving_down:
-            player_location[0] += move_speed*0.7071
+            player_movement[0] += move_speed*0.7071
         else:
-            player_location[0] += move_speed
+            player_movement[0] += move_speed
     if moving_up:
         if moving_left or moving_right:
-            player_location[1] -= move_speed*0.7071
+            player_movement[1] -= move_speed*0.7071
         else:
-            player_location[1] -= move_speed
+            player_movement[1] -= move_speed
     if moving_down:
         if moving_left or moving_right:
-            player_location[1] += move_speed*0.7071
+            player_movement[1] += move_speed*0.7071
         else:
-            player_location[1] += move_speed
-    
-    player_rect.x = player_location[0]
-    player_rect.y = player_location[1]
+            player_movement[1] += move_speed
+
+    player_rect = pygame.Rect.move(player_rect, player_movement)
+    display.blit(player_image, (player_rect.x-scroll[0], player_rect.y-scroll[1]))
 
     if player_rect.colliderect(test_rect):
         pygame.draw.rect(screen, (255, 0, 0), test_rect)
     else:
         pygame.draw.rect(screen, (0, 255, 0), test_rect)
-        
 
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -86,9 +88,8 @@ while True:
                 moving_up = False
             if event.key == K_DOWN:
                 moving_down = False
-        
-            
-            
 
+    surf = pygame.transform.scale(display, WINDOW_SIZE)
+    screen.blit(surf, (0, 0))
     pygame.display.update()
     clock.tick(144)
