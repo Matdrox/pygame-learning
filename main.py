@@ -1,7 +1,6 @@
 import pygame
 import sys
 from pygame.locals import *
-from math import sqrt
 
 clock = pygame.time.Clock()
 
@@ -15,7 +14,7 @@ screen = pygame.display.set_mode(WINDOW_SIZE, 0, 32)
 display = pygame.Surface((300, 200))
 
 player_image = pygame.image.load('img/triton.png')
-bg_image = pygame.image.load('img/bg.png')
+bg_image = pygame.image.load('img/bg.png').convert()
 
 move_speed = 1.5
 moving_left = False
@@ -26,16 +25,20 @@ moving_down = False
 player_location = [50, 50]
 scroll = [0, 0]
 
-player_rect = pygame.Rect(50, 50, player_image.get_width(), player_image.get_height())
+player_rect = pygame.Rect(
+    50, 50, player_image.get_width(), player_image.get_height())
 test_rect = pygame.Rect(100, 100, 100, 50)
 
 while True:
+    display.fill(0)
     display.blit(bg_image, (-scroll[0], -scroll[1]))
-    scroll[0] += (player_rect.x - scroll[0] - (display.get_width()/2-player_rect.width/2))/20
-    scroll[1] += (player_rect.y - scroll[1] - (display.get_height()/2-player_rect.height/2))/20
+
+    scroll[0] += (player_rect.x - scroll[0] -
+                  (display.get_width()/2-player_rect.width/2))/12
+    scroll[1] += (player_rect.y - scroll[1] -
+                  (display.get_height()/2-player_rect.height/2))/12
 
     player_movement = [0, 0]
-
 
     if moving_left:
         if moving_up or moving_down:
@@ -59,17 +62,14 @@ while True:
             player_movement[1] += move_speed
 
     player_rect = pygame.Rect.move(player_rect, player_movement)
-    display.blit(player_image, (player_rect.x-scroll[0], player_rect.y-scroll[1]))
-
-    if player_rect.colliderect(test_rect):
-        pygame.draw.rect(screen, (255, 0, 0), test_rect)
-    else:
-        pygame.draw.rect(screen, (0, 255, 0), test_rect)
+    display.blit(player_image, (player_rect.x -
+                 scroll[0], player_rect.y-scroll[1]))
 
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+
         if event.type == KEYDOWN:
             if event.key == K_LEFT:
                 moving_left = True
@@ -79,6 +79,7 @@ while True:
                 moving_up = True
             if event.key == K_DOWN:
                 moving_down = True
+
         if event.type == KEYUP:
             if event.key == K_LEFT:
                 moving_left = False
