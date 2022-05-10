@@ -14,13 +14,11 @@ screen = pygame.display.set_mode(WINDOW_SIZE, 0, 32)
 display = pygame.Surface((300, 200))
 
 player_image = pygame.image.load('img/triton.png')
-bg_image = pygame.image.load('img/map.png').convert()
+bg_image = pygame.image.load('img/maps/map.png').convert()
 
-move_speed = 1.5
-moving_left = False
-moving_right = False
-moving_up = False
-moving_down = False
+move_speed = 2
+velocity_x = 0
+velocity_y = 0
 
 player_location = [50, 50]
 scroll = [0, 0]
@@ -30,67 +28,43 @@ player_rect = pygame.Rect(
 test_rect = pygame.Rect(100, 100, 100, 50)
 
 while True:
+    # delta_time = clock.tick(60)/1000
     display.fill(0)
     display.blit(bg_image, (-scroll[0], -scroll[1]))
 
     scroll[0] += (player_rect.x - scroll[0] -
-                  (display.get_width()/2-player_rect.width/2))/12
+                  (display.get_width()/2-player_rect.width/2))/5
     scroll[1] += (player_rect.y - scroll[1] -
-                  (display.get_height()/2-player_rect.height/2))/12
+                  (display.get_height()/2-player_rect.height/2))/5
 
     player_movement = [0, 0]
-
-    if moving_left:
-        if moving_up or moving_down:
-            player_movement[0] -= move_speed*0.7071
-        else:
-            player_movement[0] -= move_speed
-    if moving_right:
-        if moving_up or moving_down:
-            player_movement[0] += move_speed*0.7071
-        else:
-            player_movement[0] += move_speed
-    if moving_up:
-        if moving_left or moving_right:
-            player_movement[1] -= move_speed*0.7071
-        else:
-            player_movement[1] -= move_speed
-    if moving_down:
-        if moving_left or moving_right:
-            player_movement[1] += move_speed*0.7071
-        else:
-            player_movement[1] += move_speed
+    player_movement[0] += velocity_x
+    player_movement[1] += velocity_y
 
     player_rect = pygame.Rect.move(player_rect, player_movement)
     display.blit(player_image, (player_rect.x -
                  scroll[0], player_rect.y-scroll[1]))
+
+    velocity_x, velocity_y = 0, 0
+    keys = pygame.key.get_pressed()
+    if keys[K_LEFT] or keys[K_a]:
+        velocity_x = -move_speed
+    if keys[K_RIGHT] or keys[K_d]:
+        velocity_x = move_speed
+    if keys[K_UP] or keys[K_w]:
+        velocity_y = -move_speed
+    if keys[K_DOWN] or keys[K_s]:
+        velocity_y = move_speed
+    if velocity_x != 0 and velocity_y != 0:
+        velocity_x *= 0.7071
+        velocity_y *= 0.7071
 
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
 
-        if event.type == KEYDOWN:
-            if event.key == K_a:
-                moving_left = True
-            if event.key == K_d:
-                moving_right = True
-            if event.key == K_w:
-                moving_up = True
-            if event.key == K_s:
-                moving_down = True
-
-        if event.type == KEYUP:
-            if event.key == K_a:
-                moving_left = False
-            if event.key == K_d:
-                moving_right = False
-            if event.key == K_w:
-                moving_up = False
-            if event.key == K_s:
-                moving_down = False
-
     surf = pygame.transform.scale(display, WINDOW_SIZE)
     screen.blit(surf, (0, 0))
     pygame.display.update()
-    clock.tick(144)
+    clock.tick(60)
