@@ -17,7 +17,7 @@ display = pygame.Surface((300, 200))
 player_image = pygame.image.load('img/triton.png')
 bg_image = pygame.image.load('img/maps/map.png').convert()
 
-move_speed = 35
+move_speed = 25
 velocity_x = 0
 velocity_y = 0
 delta_time = 0
@@ -25,6 +25,7 @@ speed = 0
 
 player_location = [50, 50]
 scroll = [0, 0]
+scroll_temp = [0, 0]
 
 player_rect = pygame.Rect(
     50, 50, player_image.get_width(), player_image.get_height())
@@ -38,9 +39,12 @@ while True:
     display.blit(bg_image, (-scroll[0], -scroll[1]))
 
     scroll[0] += (player_rect.x - scroll[0] -
-                  (display.get_width()/2-player_rect.width/2))/7
+                  (display.get_width()/2-player_rect.width/2))/10
     scroll[1] += (player_rect.y - scroll[1] -
-                  (display.get_height()/2-player_rect.height/2))/7
+                  (display.get_height()/2-player_rect.height/2))/10
+    scroll_temp = scroll.copy()
+    scroll_temp[0] = int(scroll[0])
+    scroll_temp[1] = int(scroll[1])
 
     player_movement = [0, 0]
     player_movement[0] += velocity_x * speed
@@ -60,9 +64,9 @@ while True:
         velocity_y = -move_speed
     if keys[K_DOWN] or keys[K_s]:
         velocity_y = move_speed
-    if velocity_x != 0 and velocity_y != 0:
+    # if velocity_x != 0 and velocity_y != 0:
         # velocity_x *= 0.7071
-        velocity_y *= 0.7071
+        # velocity_y *= 0.7071
 
     for event in pygame.event.get():
         if event.type == QUIT:
