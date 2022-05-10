@@ -2,6 +2,7 @@ import pygame
 import sys
 from pygame.locals import *
 
+
 clock = pygame.time.Clock()
 
 pygame.init()
@@ -16,9 +17,11 @@ display = pygame.Surface((300, 200))
 player_image = pygame.image.load('img/triton.png')
 bg_image = pygame.image.load('img/maps/map.png').convert()
 
-move_speed = 2
+move_speed = 35
 velocity_x = 0
 velocity_y = 0
+delta_time = 0
+speed = 0
 
 player_location = [50, 50]
 scroll = [0, 0]
@@ -28,18 +31,20 @@ player_rect = pygame.Rect(
 test_rect = pygame.Rect(100, 100, 100, 50)
 
 while True:
-    # delta_time = clock.tick(60)/1000
+    delta_time = clock.tick(60)
+    speed = 1/float(delta_time)
+
     display.fill(0)
     display.blit(bg_image, (-scroll[0], -scroll[1]))
 
     scroll[0] += (player_rect.x - scroll[0] -
-                  (display.get_width()/2-player_rect.width/2))/5
+                  (display.get_width()/2-player_rect.width/2))/7
     scroll[1] += (player_rect.y - scroll[1] -
-                  (display.get_height()/2-player_rect.height/2))/5
+                  (display.get_height()/2-player_rect.height/2))/7
 
     player_movement = [0, 0]
-    player_movement[0] += velocity_x
-    player_movement[1] += velocity_y
+    player_movement[0] += velocity_x * speed
+    player_movement[1] += velocity_y * speed
 
     player_rect = pygame.Rect.move(player_rect, player_movement)
     display.blit(player_image, (player_rect.x -
@@ -56,7 +61,7 @@ while True:
     if keys[K_DOWN] or keys[K_s]:
         velocity_y = move_speed
     if velocity_x != 0 and velocity_y != 0:
-        velocity_x *= 0.7071
+        # velocity_x *= 0.7071
         velocity_y *= 0.7071
 
     for event in pygame.event.get():
@@ -66,5 +71,6 @@ while True:
 
     surf = pygame.transform.scale(display, WINDOW_SIZE)
     screen.blit(surf, (0, 0))
+    # pygame.display.set_caption(str(clock.get_fps()))
     pygame.display.update()
-    clock.tick(60)
+
