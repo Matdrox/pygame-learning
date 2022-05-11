@@ -5,5 +5,3 @@ class Level1(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = pygame.image.load('img/maps/map.png').convert()
         self.rect = self.image.get_rect(topleft = pos)
-
-        self.direction = pygame.math.Vector2()

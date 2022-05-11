@@ -1,13 +1,56 @@
+from matplotlib import scale
 import pygame
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups):
+    def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
-        self.image = pygame.image.load('img/triton.png').convert_alpha()
+        self.image =  pygame.image.load('img/triton.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
-        # self.display_surface = pygame.display.get_surface()
 
+        self.direction = pygame.math.Vector2()
+        self.speed = 5
 
-    # def run(self):
-        # self.display_surface.blit(self.image, (0, 0))
+        self.obstacle_sprites = obstacle_sprites
+    
+    def input(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_LEFT]:
+            self.direction.x = -1
+        elif keys[pygame.K_RIGHT]:
+            self.direction.x = 1
+        else:
+            self.direction.x = 0
+
+        if keys[pygame.K_UP]:
+            self.direction.y = -1
+        elif keys[pygame.K_DOWN]:
+            self.direction.y = 1
+        else:
+            self.direction.y = 0
+        
+    def move(self, speed):
+        if self.direction.magnitude() != 0:
+            self.direction = self.direction.normalize()
+        self.rect.center += self.direction * speed
+
+    def collision(self, direction):
+        if direction == 'horizontal':
+            for sprite in self.obstacle_sprites:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.x < 0:    # left
+                        self.rect.left = sprite.rect.right
+                    if self.direction.x > 0:    # right
+                        self.rect.right = sprite.rect.left
+        if direction == 'vertical':
+            for sprite in self.obstacle_sprites:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.y < 0:    # up
+                        self.rect.top = sprite.rect.bottom
+                    if self.direction.y > 0:    # left
+                        self.rect.bottom = sprite.rect.top
+
+    def update(self):
+        self.input()
+        self.move(self.speed)
