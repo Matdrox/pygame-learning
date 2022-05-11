@@ -46,8 +46,6 @@ test_rect = pygame.Rect(100, 100, 100, 50)
 
 
 def gameWindow():
-    surf = pygame.transform.scale(display, WINDOW_SIZE)
-    screen.blit(surf, (0, 0))
     # pygame.display.set_caption(str(clock.get_fps()))
     pygame.display.update()
 
